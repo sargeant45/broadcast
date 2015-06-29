@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Broadcast by sargeant45</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Broadcast</h1>
+      <h2 class="project-tagline">Function passing done the Scratch way.</h2>
+      <a href="https://github.com/sargeant45/broadcast" class="btn">View on GitHub</a>
+      <a href="https://github.com/sargeant45/broadcast/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/sargeant45/broadcast/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p><code>broadcast</code> is a small CoffeeScript library (around 38 lines of CoffeeScript) that adds <a href="http://scratch.mit.edu">Scratch</a>'s broadcasts to JavaScript. If you don't know what broadcasts are, or even what Scratch is, you can look <a href="http://wiki.scratch.mit.edu/wiki/Broadcast">here.</a> Broadcasts are basically very simple function calls, but they don't stop the flow of the script, so you can run a broadcast that calls any number of functions and then returns with a callback function.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>First, initialize a new <code>Broadcast()</code> class like so:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> myBroadcasts <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Broadcast</span>();</pre></div>
+
+<p>After you initialize the Broadcast class, you can create new Broadcasts inside of it by specifying a Broadcast ID (a.k.a <code>"123"</code>) and an array of strings including functions it should call when referenced (a.k.a <code>["a()", "b()", "c()"]</code>)</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// Create new Broadcast</span>
+myBroadcasts.create(
+    <span class="pl-s"><span class="pl-pds">"</span>123<span class="pl-pds">"</span></span>, <span class="pl-c">// specify first parameter, the Broadcast ID which you will later use to call the Broadcast.</span>
+    [<span class="pl-s"><span class="pl-pds">"</span>console.log('a')<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>console.log('b')<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>console.log('c')<span class="pl-pds">"</span></span>] <span class="pl-c">// array of functions inside strings to be evaluated when the Broadcast is called.</span>
+);</pre></div>
+
+<p>When you are ready to call a Broadcast, you should pass the Broadcast ID and a callback function to your Broadcast class like this:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// Call the Broadcast, and when it finishes, do something.</span>
+myBroadcasts.shout(<span class="pl-s"><span class="pl-pds">"</span>123<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>() {
+    <span class="pl-c1">alert</span>(<span class="pl-s"><span class="pl-pds">"</span>Broadcast has completed!<span class="pl-pds">"</span></span>); <span class="pl-c">// Callback</span>
+});</pre></div>
+
+<p>When you call the Broadcast with ID "123", it will run each function in the array you originally specified (a.k.a <code>["a()", "b()", "c()"]</code>), and then run the callback. You do not need to specify a callback, but keep in mind that Broadcast is built on callbacks, and is pretty much useless as a standalone library without using them.</p>
+
+<p>You are not restricted to one Broadcast per class, and you can create as many Broadcasts as you want as long as they all have different ID's. An example of multiple Broadcasts in one class is this:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// Create new Broadcast</span>
+myBroadcasts.create(
+    <span class="pl-s"><span class="pl-pds">"</span>123<span class="pl-pds">"</span></span>, <span class="pl-c">// specify first parameter, the Broadcast ID which you will later use to call the Broadcast.</span>
+    [<span class="pl-s"><span class="pl-pds">"</span>console.log('a');<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>console.log('b');<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>console.log('c');<span class="pl-pds">"</span></span>] <span class="pl-c">// array of functions inside strings to be evaluated when the Broadcast is called.</span>
+);
+
+<span class="pl-c">// Create another new Broadcast</span>
+myBroadcasts.create(
+    <span class="pl-s"><span class="pl-pds">"</span>ABC<span class="pl-pds">"</span></span>, <span class="pl-c">// specify first parameter, the Broadcast ID which you will later use to call the Broadcast.</span>
+    [<span class="pl-s"><span class="pl-pds">"</span>console.log('1');<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>console.log('2');<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>console.log('3');<span class="pl-pds">"</span></span>] <span class="pl-c">// array of functions inside strings to be evaluated when the Broadcast is called.</span>
+);
+
+<span class="pl-c">// Call "123" first, then call "ABC", and finally alert "Broadcasts have completed."</span>
+myBroadcasts.shout(<span class="pl-s"><span class="pl-pds">"</span>123<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(){
+    myBroadcasts.shout(<span class="pl-s"><span class="pl-pds">"</span>ABC<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(){
+        <span class="pl-c1">alert</span>(<span class="pl-s"><span class="pl-pds">"</span>Broadcasts have completed.<span class="pl-pds">"</span></span>);
+    });
+});</pre></div>
+
+<p>You can also modify Broadcasts after they have been created. Currently, you can change the Broadcast ID, and you can change the array of functions that the Broadcast will call when it shouts.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// Create new Broadcast</span>
+myBroadcasts.create(
+    <span class="pl-s"><span class="pl-pds">"</span>123<span class="pl-pds">"</span></span>, <span class="pl-c">// specify first parameter, the Broadcast ID which you will later use to call the Broadcast.</span>
+    [<span class="pl-s"><span class="pl-pds">"</span>console.log('a');<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>console.log('b');<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>console.log('c');<span class="pl-pds">"</span></span>] <span class="pl-c">// array of functions inside strings to be evaluated when the Broadcast is called.</span>
+);
+
+<span class="pl-c">// Modify the Broadcast.</span>
+myBroadcasts.modify(
+    <span class="pl-s"><span class="pl-pds">"</span>123<span class="pl-pds">"</span></span>, <span class="pl-c">// pass current Broadcast ID</span>
+    [<span class="pl-s"><span class="pl-pds">"</span>console.log('7');<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>console.log('8');<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>console.log('9');<span class="pl-pds">"</span></span>], <span class="pl-c">// pass new functions to call</span>
+    <span class="pl-s"><span class="pl-pds">"</span>XYZ<span class="pl-pds">"</span></span> <span class="pl-c">// pass new Broadcast ID</span>
+);
+
+<span class="pl-c">// Run the modified Broadcast.</span>
+myBroadcasts.shout(<span class="pl-s"><span class="pl-pds">"</span>XYZ<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>() {
+   <span class="pl-c1">alert</span>(<span class="pl-s"><span class="pl-pds">"</span>XYZ has finished.<span class="pl-pds">"</span></span>);
+});</pre></div>
+
+<p>Broadcast is open-source under the MIT license, which basically means you can do whatever the hell you want with it under proper attribution. Installing Broadcast is easy, and you can either use Bower,</p>
+
+<div class="highlight highlight-shell"><pre>bower install scratch-broadcast</pre></div>
+
+<p>...or you can just include the script in your HTML document's <code>&lt;head&gt;</code>,</p>
+
+<div class="highlight highlight-html"><pre>&lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>your_javascript_folder/broadcast.min.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;</pre></div>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/sargeant45/broadcast">Broadcast</a> is maintained by <a href="https://github.com/sargeant45">sargeant45</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
