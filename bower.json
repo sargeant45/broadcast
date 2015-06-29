@@ -1,0 +1,37 @@
+{
+  "name": "scratch-broadcast",
+  "version": "1.0",
+  "description": "JavaScript function passing done the Scratch way",
+  "main": [
+    "src/broadcast.min.js"
+  ],
+  "devDependencies": {
+    "coffee-script": "https://github.com/jashkenas/coffeescript.git#master"
+  },
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "Scratch",
+    "function passing",
+    "broadcasts",
+    "async"
+  ],
+  "authors": [
+    "Ethan Arterberry <ethanarterberry@gmail.com>"
+    
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "homepage": "http://ethanarterberry.com/broadcast",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sargeant45/broadcast.git"
+  }
+}
