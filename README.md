@@ -67,7 +67,7 @@ myBroadcasts.shout("XYZ", function() {
 
 Broadcast is open-source under the MIT license, which basically means you can do whatever the hell you want with it under proper attribution. Installing Broadcast is easy, and you can either use Bower,
 ```shell
-bower install http://github.com/sargeant45/broadcast.git
+bower install scratch-broadcast
 ```
 ...or you can just include the script in your HTML document's `<head>`,
 ```html
