@@ -11,7 +11,7 @@ After you initialize the Broadcast class, you can create new Broadcasts inside o
 // Create new Broadcast
 myBroadcasts.create(
 	"123", // specify first parameter, the Broadcast ID which you will later use to call the Broadcast.
-	function() {
+	[function() {
 	  // the functions to be run when the Broadcast shouts
 	  /* e.g. */ alert("Broadcast is running!");
 	}
