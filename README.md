@@ -6,7 +6,7 @@ First, initialize a new `Broadcast()` class like so:
 ```javascript
 var myBroadcasts = new Broadcast();
 ```
-After you initialize the Broadcast class, you can create new Broadcasts inside of it by specifying a Broadcast ID (a.k.a `"123"`) and a function including functions it should call when referenced (a.k.a `function() { alert('ey b0ss'); }`)
+After you initialize the Broadcast class, you can create new Broadcasts inside of it by specifying a Broadcast ID (a.k.a `"123"`) and an array including functions it should call when referenced (a.k.a `[function() { alert('ey b0ss'); }]`)
 ```javascript
 // Create new Broadcast
 myBroadcasts.create(
@@ -28,28 +28,35 @@ myBroadcasts.shout("123", "async", function() {
   alert("Broadcast is completing!");
 });
 ```
-When you call the Broadcast with ID "123", it will run each line in the function you originally specified (a.k.a `function() { alert('ey b0ss'); }`), and then run the callback. You do not need to specify a callback, but keep in mind that Broadcast is built on callbacks, and is pretty much useless as a standalone library without using them.
+When you call the Broadcast with ID "123", it will run each function in the array of functions you originally specified (a.k.a `[function() { alert('ey b0ss'); }]`), and then run the callback. You do not need to specify a callback, but keep in mind that Broadcast is built on callbacks, and is pretty much useless as a standalone library without using them.
 
 You are not restricted to one Broadcast per class, and you can create as many Broadcasts as you want as long as they all have different ID's. An example of multiple Broadcasts in one class is this:
 ```javascript
 // Create new Broadcast
 myBroadcasts.create(
 	"123", // specify first parameter, the Broadcast ID which you will later use to call the Broadcast.
-	function() {
-	  console.log('a'); // Functions
-	  console.log('b'); // To
-	  console.log('c'); // Run
-	}
+	[
+	  function() {
+	    console.log("a");
+	  },
+	  function() {
+	    console.log("b");
+	  },
+	  function() {
+	    console.log("c");
+	    console.log("d");
+	  }
+	]
 );
 
 // Create another new Broadcast
 myBroadcasts.create(
 	"ABC", // specify first parameter, the Broadcast ID which you will later use to call the Broadcast.
-		function() {
+	[function() {
 	  console.log('1'); // Functions
 	  console.log('2'); // To
 	  console.log('3'); // Run
-	}
+	}]
 );
 
 // Call "123" first, then call "ABC", and finally alert "Broadcasts have completed"
@@ -64,21 +71,21 @@ You can also modify Broadcasts after they have been created. Currently, you can 
 // Create new Broadcast
 myBroadcasts.create(
 	"123", // specify first parameter, the Broadcast ID which you will later use to call the Broadcast.
-	function() {
+	[function() {
 	  console.log('a'); // Functions
 	  console.log('b'); // To
 	  console.log('c'); // Run
-	}
+	}]
 );
 
 // Modify the Broadcast.
 myBroadcasts.modify(
 	"123", // pass current Broadcast ID
-	function() {
+	[function() {
 	  console.log('9'); // Functions
 	  console.log('8'); // To         // pass new functions to call
 	  console.log('7'); // Run
-	},
+	}],
 	"XYZ" // pass new Broadcast ID
 );
 
@@ -89,13 +96,20 @@ myBroadcasts.shout("XYZ", "async" function() {
 ```
 A newly added feature in Broadcast 1.1.0 is `Broadcast::add`, which allows you to add a new event handler to an existing Broadcast like so:
 ```javascript
-myBroadcasts.create("123", function() {
+myBroadcasts.create("123", [function() {
   console.log("a");
-});
+}]);
 
-myBroadcasts.add("123", function() {
-  console.log("b");
-});
+myBroadcasts.add("123", 
+  [
+    function() {
+      console.log("b");
+    },
+    function() {
+      console.log("c");
+    }
+  ]
+);
 
 myBroadcasts.shout("123", "sync", function() {
   console.log("Done!");
@@ -104,6 +118,7 @@ myBroadcasts.shout("123", "sync", function() {
 // Outputs:
 // a
 // b
+// c
 // Done!
 ```
 

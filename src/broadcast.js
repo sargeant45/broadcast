@@ -1,5 +1,5 @@
 /*
-broadcast 1.1
+broadcast 1.2
 JavaScript function passing done the Scratch way
 open-source under the MIT license, (c) Ethan Arterberry, 2015
 
@@ -17,10 +17,13 @@ Broadcast = (function() {
   }
 
   Broadcast.prototype.create = function(id, execute) {
+    var i, item, len;
     if (id && execute) {
-      this.broadcasts[id] = function() {
-        return execute();
-      };
+      this.broadcasts[id] = [];
+      for (i = 0, len = execute.length; i < len; i++) {
+        item = execute[i];
+        this.broadcasts[id].push(item);
+      }
       return typeof console !== "undefined" && console !== null ? console.log("Broadcast with ID \"" + id + "\" has been set up to execute functions:\n\t%s\nwhen called.", execute.toString().replace(/\n/g, "\n\t")) : void 0;
     } else {
       return typeof console !== "undefined" && console !== null ? console.error("Please pass all parameters (id, execute) to Broadcast::create.") : void 0;
@@ -28,45 +31,53 @@ Broadcast = (function() {
   };
 
   Broadcast.prototype.shout = function(id, sync, _callback) {
-    if (id) {
-      if (sync) {
-        switch (sync) {
-          case "async":
+    var i, item, j, len, len1, ref, ref1, results;
+    if (!id) {
+      throw "You did not specify a Broadcast ID.";
+    }
+    if (!sync) {
+      throw "You did not specify a sync type.";
+    }
+    switch (sync) {
+      case "async":
 
-            /*@cc_on
-              // conditional IE < 9 only fix for setTimeout params
-              @if (@_jscript_version <= 9)
-              (function(f){
-                 window.setTimeout =f(window.setTimeout);
-                 window.setInterval =f(window.setInterval);
-              })(function(f){return function(c,t){var a=[].slice.call(arguments,2);return f(function(){c.apply(this,a)},t)}});
-              @end
-            @
-             */
-            return setTimeout(function(broadcasts) {
-              broadcasts[id]();
-              if (_callback) {
-                return _callback();
-              }
-            }, 0, this.broadcasts);
-          case "sync":
-            this.broadcasts[id]();
-            if (_callback) {
-              return _callback();
-            }
-            break;
-          default:
-            if (_callback) {
-              return _callback();
-            }
+        /*@cc_on
+          // conditional IE < 9 only fix for setTimeout params
+          @if (@_jscript_version <= 9)
+          (function(f){
+             window.setTimeout =f(window.setTimeout);
+             window.setInterval =f(window.setInterval);
+          })(function(f){return function(c,t){var a=[].slice.call(arguments,2);return f(function(){c.apply(this,a)},t)}});
+          @end
+        @
+         */
+        setTimeout(function() {
+          if (_callback) {
+            return _callback();
+          }
+        }, 0, item);
+        ref = this.broadcasts[id];
+        results = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          item = ref[i];
+          results.push(setTimeout(function(item) {
+            return item();
+          }, 0, item));
         }
-      } else {
+        return results;
+        break;
+      case "sync":
+        ref1 = this.broadcasts[id];
+        for (j = 0, len1 = ref1.length; j < len1; j++) {
+          item = ref1[j];
+          item();
+        }
         if (_callback) {
           return _callback();
         }
-      }
-    } else {
-      return typeof console !== "undefined" && console !== null ? console.error("Please pass the \"id\" parameter to Broadcast::shout.") : void 0;
+        break;
+      default:
+        throw "'sync' can only be 'async' or 'sync'.";
     }
   };
 
@@ -77,15 +88,13 @@ Broadcast = (function() {
         oldexecute = function(broadcasts) {
           return broadcasts[id];
         };
-        this.broadcasts[id] = function() {
-          return execute;
-        };
+        this.broadcasts[id] = execute;
         if (typeof console !== "undefined" && console !== null) {
           console.log("Broadcast with ID \"" + id + "\" has been modified to execute code:\n\t%s\ninstead of functions:\n[%s]\nwhen called.", execute.toString().replace(/\n/g, "\n\t"), oldexecute(this.broadcasts).toString().replace(/\n/g, "\n\t"));
         }
       }
       if (newid) {
-        this.broadcasts["" + newid] = this.broadcasts[id];
+        this.broadcasts[newid] = this.broadcasts[id];
         delete this.broadcasts[id];
         return typeof console !== "undefined" && console !== null ? console.log("Broadcast with ID \"" + id + "\" has been renamed to \"" + newid + "\".") : void 0;
       }
@@ -95,13 +104,12 @@ Broadcast = (function() {
   };
 
   Broadcast.prototype.add = function(id, execute) {
-    var oldexecute;
+    var i, item, len;
     if (id && execute) {
-      oldexecute = this.broadcasts[id];
-      this.broadcasts[id] = function() {
-        oldexecute();
-        return execute();
-      };
+      for (i = 0, len = execute.length; i < len; i++) {
+        item = execute[i];
+        this.broadcasts[id].push(item);
+      }
       return typeof console !== "undefined" && console !== null ? console.log("Broadcast with ID \"" + id + "\" has been set up to execute newly added code:\n\t%s\nwhen called.", execute.toString().replace(/\n/g, "\n\t")) : void 0;
     } else {
       return typeof console !== "undefined" && console !== null ? console.error("Please pass all parameters (id, execute) to Broadcast::add.") : void 0;
